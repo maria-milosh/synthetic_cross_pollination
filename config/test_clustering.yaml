@@ -1,0 +1,48 @@
+pilot_id: "test_clustering_001"
+pilot_name: "Clustering Implementation Test"
+
+# Topic Definition
+topic:
+  description: |
+    Your city has $500,000 in discretionary funds to allocate.
+    You must choose which area should receive the funding.
+  options:
+    - "Park improvements"
+    - "Senior services expansion"
+    - "Street safety improvements"
+    - "Small business grants"
+    - "Public library upgrades"
+    - "Community health clinics"
+    - "Affordable housing assistance"
+
+# Small sample for testing
+participants_per_condition: 3
+
+# Disagreement Threshold (high to avoid early termination)
+disagreement_threshold: 0.9
+min_responses_for_threshold: 50
+
+# Stopping Conditions
+max_clarification_exchanges: 2
+max_socratic_exchanges: 2
+
+# Opposition Selection - test new cluster_embedding method
+opposition_method: "cluster_embedding"
+
+# Clustering Configuration
+clustering_algorithm: "kmeans"
+max_clusters_per_option: 3
+
+# Embedding Configuration
+embedding_model: "text-embedding-3-small"
+
+# Display
+include_vote_distribution: false
+arguments_per_option: 3
+
+# API Settings
+api_sleep_seconds: 1
+model: "gpt-4o-mini"
+
+# Reproducibility
+random_seed: 42

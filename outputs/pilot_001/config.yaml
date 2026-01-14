@@ -1,0 +1,25 @@
+api_sleep_seconds: 3
+arguments_per_option: 3
+clustering_algorithm: kmeans
+disagreement_threshold: 0.95
+embedding_model: text-embedding-3-small
+include_vote_distribution: false
+max_clarification_exchanges: 2
+max_clusters_per_option: 6
+max_socratic_exchanges: 2
+min_responses_for_threshold: 6
+model: gpt-4o
+opposition_method: cluster_embedding
+participants_per_condition: 2
+pilot_id: pilot_001
+pilot_name: Participatory Budgeting Test
+topic:
+  description: 'Your city has $500,000 in discretionary funds to allocate.
+
+    You must choose which area should receive the funding.
+
+    '
+  options:
+  - Small business grants
+  - Public library upgrades
+  - Youth job training programs

@@ -1,0 +1,24 @@
+api_sleep_seconds: 1
+arguments_per_option: 2
+disagreement_threshold: 0.5
+include_vote_distribution: true
+max_clarification_exchanges: 4
+max_socratic_exchanges: 4
+model: gpt-5.2
+opposition_method: highest_voted
+participants_per_condition: 30
+pilot_id: test_full_003
+pilot_name: Full Pipeline Test
+random_seed: 123
+topic:
+  description: 'Your city has $500,000 in discretionary funds to allocate.
+
+    You must choose which area should receive the funding.
+
+    '
+  options:
+  - Street Maintenance and Pothole Repair
+  - Expanded Mental Health Services
+  - Affordable Housing Preservation Fund
+  - Public Safety and Violence Prevention Programs
+  - Public Spaces and Parks Improvement

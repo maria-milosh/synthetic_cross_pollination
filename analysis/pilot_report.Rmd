@@ -1,0 +1,447 @@
+---
+title: "LLM Deliberation Experiment"
+subtitle: "`r params$pilot_id`"
+output:
+  ioslides_presentation:
+    widescreen: true
+    css: report_style.css
+params:
+  pilot_id: "test_full_001"
+  project_root: ".."
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  fig.width = 8,
+  fig.height = 4.5,
+  dpi = 100,
+  out.width = "100%",
+  fig.align = "center"
+)
+
+library(tidyverse)
+library(jsonlite)
+library(scales)
+
+# Condition labels and colors
+condition_labels <- c(
+  "simple_voting" = "Simple Voting",
+  "simple_passive" = "Simple Passive",
+  "clarified_passive" = "Clarified Passive",
+  "acp" = "ACP"
+)
+
+condition_colors <- c(
+  "simple_voting" = "#CCCCCC",
+  "simple_passive" = "#A6CEE3",
+  "clarified_passive" = "#1F78B4",
+  "acp" = "#6A3D9A"
+)
+
+# Custom theme - smaller for slides
+theme_slides <- function() {
+  theme_minimal(base_size = 11) +
+    theme(
+      plot.title = element_text(face = "bold", size = 14),
+      plot.subtitle = element_text(color = "gray40", size = 10),
+      legend.position = "bottom",
+      panel.grid.minor = element_blank()
+    )
+}
+
+# Load data
+pilot_dir <- file.path(params$project_root, "outputs", params$pilot_id)
+json_data <- fromJSON(file.path(pilot_dir, "participants.json"), simplifyDataFrame = FALSE)
+participants_raw <- json_data$participants
+
+# Parse participants
+participants <- map_dfr(participants_raw, function(p) {
+  tibble(
+    participant_id = p$participant_id %||% NA_character_,
+    condition = p$condition %||% NA_character_,
+    status = p$status %||% NA_character_,
+    initial_choice = p$initial_choice %||% NA_character_,
+    final_choice = p$final_choice %||% NA_character_,
+    initial_explanation = p$initial_explanation %||% NA_character_,
+    age = p$demographics$age %||% NA_integer_,
+    sex = p$demographics$sex %||% NA_character_,
+    education = p$demographics$education %||% NA_character_,
+    political_leaning = p$demographics$political_leaning %||% NA_character_,
+    income = p$demographics$income %||% NA_character_,
+    has_clarification = !is.null(p$clarification_transcript) && length(p$clarification_transcript) > 0,
+    has_adversarial = !is.null(p$adversarial_transcript) && length(p$adversarial_transcript) > 0
+  )
+}) %>%
+  mutate(
+    position_changed = !is.na(initial_choice) & !is.na(final_choice) & initial_choice != final_choice
+  )
+
+# Load config if available
+config_file <- file.path(pilot_dir, "config.yaml")
+config <- if (file.exists(config_file)) {
+  yaml::read_yaml(config_file)
+} else {
+  list(topic = list(description = "Unknown topic"))
+}
+
+# Summary stats
+n_total <- nrow(participants)
+n_complete <- sum(participants$status == "complete", na.rm = TRUE)
+conditions <- unique(participants$condition)
+```
+
+## Experiment Overview
+
+**Topic:** `r config$topic$description %||% "LLM-mediated collective decision making"`
+
+**Pilot ID:** `r params$pilot_id`
+
+<div class="columns-2">
+
+**Participants:**
+
+- Total: `r n_total`
+- Complete: `r n_complete`
+- Conditions: `r length(conditions)`
+
+**Conditions:**
+
+```{r overview-table, results='asis'}
+participants %>%
+  filter(status == "complete") %>%
+  count(condition, name = "n") %>%
+  mutate(condition = condition_labels[condition]) %>%
+  knitr::kable(col.names = c("Condition", "N"), format = "html")
+```
+
+</div>
+
+## Initial Vote Distribution
+
+```{r initial-votes}
+vote_counts <- participants %>%
+  filter(status == "complete", !is.na(initial_choice)) %>%
+  count(initial_choice, name = "n") %>%
+  mutate(pct = n / sum(n))
+
+ggplot(vote_counts, aes(x = reorder(initial_choice, -n), y = n, fill = initial_choice)) +
+  geom_col(width = 0.7) +
+  geom_text(aes(label = paste0(n, " (", percent(pct, accuracy = 1), ")")),
+            vjust = -0.3, size = 3.5) +
+  scale_fill_brewer(palette = "Set2", guide = "none") +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +
+  labs(
+    title = "Initial Vote Distribution",
+    subtitle = "Before any deliberation or exposure",
+    x = NULL,
+    y = "Count"
+  ) +
+  theme_slides() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+## Position Change Rates {.flexbox .vcenter}
+
+```{r change-rates}
+change_data <- participants %>%
+  filter(status == "complete", !is.na(position_changed)) %>%
+  group_by(condition) %>%
+  summarise(
+    n = n(),
+    changed = sum(position_changed),
+    change_rate = mean(position_changed),
+    se = sqrt(change_rate * (1 - change_rate) / n),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    condition = factor(condition, levels = names(condition_labels))
+  )
+
+ggplot(change_data, aes(x = condition, y = change_rate, fill = condition)) +
+  geom_col(width = 0.7) +
+  geom_errorbar(
+    aes(ymin = pmax(0, change_rate - 1.96 * se),
+        ymax = pmin(1, change_rate + 1.96 * se)),
+    width = 0.2, linewidth = 0.8
+  ) +
+  geom_text(
+    aes(label = paste0(round(change_rate * 100, 1), "%\n(", changed, "/", n, ")")),
+    vjust = -0.5, size = 3, fontface = "bold"
+  ) +
+  scale_fill_manual(values = condition_colors, guide = "none") +
+  scale_x_discrete(labels = condition_labels) +
+  scale_y_continuous(
+    labels = percent_format(),
+    limits = c(0, NA),
+    expand = expansion(mult = c(0, 0.2))
+  ) +
+  labs(
+    title = "Position Change Rate by Condition",
+    subtitle = "Percentage of participants who changed their vote after deliberation",
+    x = NULL,
+    y = "Change Rate"
+  ) +
+  theme_slides()
+```
+
+## Vote Shifts (Sankey)
+
+```{r sankey, fig.height=5}
+# Check if ggalluvial is available
+if (requireNamespace("ggalluvial", quietly = TRUE)) {
+  library(ggalluvial)
+
+  flow_data <- participants %>%
+    filter(status == "complete", !is.na(initial_choice), !is.na(final_choice)) %>%
+    count(condition, initial_choice, final_choice, name = "freq") %>%
+    mutate(
+      changed = initial_choice != final_choice,
+      condition = factor(condition, levels = names(condition_labels))
+    )
+
+  if (nrow(flow_data) > 0) {
+    ggplot(flow_data, aes(axis1 = initial_choice, axis2 = final_choice, y = freq)) +
+      geom_alluvium(aes(fill = changed), width = 1/3, alpha = 0.7) +
+      geom_stratum(width = 1/3, fill = "gray90", color = "gray40") +
+      geom_text(stat = "stratum", aes(label = after_stat(stratum)), size = 1.8) +
+      scale_x_discrete(limits = c("Initial", "Final"), expand = c(0.15, 0.05)) +
+      scale_fill_manual(
+        values = c("FALSE" = "gray70", "TRUE" = "#E41A1C"),
+        labels = c("FALSE" = "No change", "TRUE" = "Changed"),
+        name = NULL
+      ) +
+      facet_wrap(~condition, labeller = labeller(condition = condition_labels), ncol = 2) +
+      labs(
+        title = "Vote Flows: Initial to Final Position",
+        subtitle = "Red flows indicate position changes"
+      ) +
+      theme_slides() +
+      theme(
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        panel.grid = element_blank()
+      )
+  } else {
+    ggplot() +
+      annotate("text", x = 0.5, y = 0.5, label = "Insufficient data for Sankey diagram") +
+      theme_void()
+  }
+} else {
+  ggplot() +
+    annotate("text", x = 0.5, y = 0.5, label = "ggalluvial package not available") +
+    theme_void()
+}
+```
+
+## Dialogue Engagement
+
+```{r dialogue-engagement}
+# Calculate engagement metrics from raw data
+engagement_data <- map_dfr(participants_raw, function(p) {
+  if (is.null(p$condition) || p$status != "complete") return(NULL)
+
+  clar_words <- 0
+  if (!is.null(p$clarification_transcript) && length(p$clarification_transcript) > 0) {
+    clar_words <- sum(sapply(p$clarification_transcript, function(x) {
+      str_count(x$content %||% "", "\\S+")
+    }))
+  }
+
+  adv_words <- 0
+  if (!is.null(p$adversarial_transcript) && length(p$adversarial_transcript) > 0) {
+    adv_words <- sum(sapply(p$adversarial_transcript, function(x) {
+      str_count(x$content %||% "", "\\S+")
+    }))
+  }
+
+  tibble(
+    participant_id = p$participant_id,
+    condition = p$condition,
+    clarification_words = clar_words,
+    adversarial_words = adv_words,
+    total_words = clar_words + adv_words
+  )
+})
+
+if (nrow(engagement_data) > 0) {
+  engagement_summary <- engagement_data %>%
+    group_by(condition) %>%
+    summarise(
+      n = n(),
+      mean_words = mean(total_words),
+      se = sd(total_words) / sqrt(n()),
+      .groups = "drop"
+    ) %>%
+    mutate(condition = factor(condition, levels = names(condition_labels)))
+
+  ggplot(engagement_summary, aes(x = condition, y = mean_words, fill = condition)) +
+    geom_col(width = 0.7) +
+    geom_errorbar(
+      aes(ymin = mean_words - 1.96 * se, ymax = mean_words + 1.96 * se),
+      width = 0.2
+    ) +
+    geom_text(aes(label = round(mean_words)), vjust = -0.5, size = 3.5, fontface = "bold") +
+    scale_fill_manual(values = condition_colors, guide = "none") +
+    scale_x_discrete(labels = condition_labels) +
+    scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +
+    labs(
+      title = "Average Dialogue Word Count by Condition",
+      subtitle = "Total words in clarification + adversarial dialogues",
+      x = NULL,
+      y = "Mean Word Count"
+    ) +
+    theme_slides()
+} else {
+  ggplot() +
+    annotate("text", x = 0.5, y = 0.5, label = "No dialogue data available") +
+    theme_void()
+}
+```
+
+## Example: Position Changer
+
+```{r example-dialogue, results='asis'}
+# Find a position changer from ACP condition
+changers <- participants %>%
+  filter(condition == "acp", status == "complete", position_changed == TRUE)
+
+if (nrow(changers) > 0) {
+  example_id <- changers$participant_id[1]
+  example_raw <- participants_raw[[which(sapply(participants_raw, function(p) p$participant_id == example_id))]]
+
+  cat(paste0("**Participant:** ", example_id, "\n\n"))
+  cat(paste0("**Initial Vote:** ", example_raw$initial_choice, "\n\n"))
+  cat(paste0("**Final Vote:** ", example_raw$final_choice, " (CHANGED)\n\n"))
+  cat("---\n\n")
+
+  # Show adversarial dialogue excerpt
+  if (!is.null(example_raw$adversarial_transcript) && length(example_raw$adversarial_transcript) > 0) {
+    cat("**Adversarial Dialogue Excerpt:**\n\n")
+    cat('<div class="dialogue-excerpt">\n\n')
+    transcript <- example_raw$adversarial_transcript
+    for (i in seq_len(min(4, length(transcript)))) {
+      turn <- transcript[[i]]
+      role <- ifelse(turn$role == "moderator", "Moderator", "Participant")
+      content <- str_trunc(turn$content, 300)
+      cat(paste0("> **", role, ":** ", content, "\n\n"))
+    }
+    cat('</div>\n\n')
+  }
+} else {
+  cat("*No position changers found in ACP condition.*\n\n")
+
+  # Show any ACP participant instead
+  acp_participants <- participants %>% filter(condition == "acp", status == "complete")
+  if (nrow(acp_participants) > 0) {
+    example_id <- acp_participants$participant_id[1]
+    example_raw <- participants_raw[[which(sapply(participants_raw, function(p) p$participant_id == example_id))]]
+
+    cat(paste0("**Example ACP Participant:** ", example_id, "\n\n"))
+    cat(paste0("**Vote:** ", example_raw$initial_choice, " (unchanged)\n\n"))
+  }
+}
+```
+
+```{r full-dialogue, results='asis'}
+# Show complete adversarial transcript split across multiple slides
+if (exists("example_raw") && !is.null(example_raw$adversarial_transcript) && length(example_raw$adversarial_transcript) > 0) {
+  transcript <- example_raw$adversarial_transcript
+
+  # Calculate how many turns per slide based on content length
+  # Target ~800 chars per slide to fit comfortably with small font
+  chars_per_slide <- 800
+
+  # Group turns into slides
+  slides <- list()
+  current_slide <- list()
+  current_chars <- 0
+
+  for (i in seq_along(transcript)) {
+    turn <- transcript[[i]]
+    turn_chars <- nchar(turn$content)
+
+    # Start new slide if this turn would exceed limit (but always include at least 1 turn per slide)
+    if (current_chars + turn_chars > chars_per_slide && length(current_slide) > 0) {
+      slides <- c(slides, list(current_slide))
+      current_slide <- list(turn)
+      current_chars <- turn_chars
+    } else {
+      current_slide <- c(current_slide, list(turn))
+      current_chars <- current_chars + turn_chars
+    }
+  }
+  # Add final slide
+  if (length(current_slide) > 0) {
+    slides <- c(slides, list(current_slide))
+  }
+
+  n_slides <- length(slides)
+
+  # Output each slide
+  for (s in seq_along(slides)) {
+    if (n_slides > 1) {
+      cat(paste0("\n\n## Full Dialogue: Position Changer (", s, "/", n_slides, ") {.smaller}\n\n"))
+    } else {
+      cat("\n\n## Full Dialogue: Position Changer {.smaller}\n\n")
+    }
+
+    # Header on first slide only
+    if (s == 1) {
+      cat(paste0("**Participant:** ", example_raw$participant_id, " | "))
+      cat(paste0("**", example_raw$initial_choice, "** → **", example_raw$final_choice, "**\n\n"))
+    }
+
+    cat('<div class="dialogue-excerpt">\n\n')
+    for (turn in slides[[s]]) {
+      role <- ifelse(turn$role == "moderator", "Moderator", "Participant")
+      cat(paste0("> **", role, ":** ", turn$content, "\n\n"))
+    }
+    cat('</div>\n')
+  }
+} else {
+  cat("\n\n## Full Dialogue: Position Changer {.smaller}\n\n")
+  cat("*No adversarial dialogue available for this participant.*\n")
+}
+```
+
+## Key Takeaways
+
+```{r takeaways, results='asis'}
+# Calculate key stats
+total_complete <- sum(participants$status == "complete")
+total_changed <- sum(participants$position_changed, na.rm = TRUE)
+overall_change_rate <- mean(participants$position_changed, na.rm = TRUE)
+
+acp_data <- participants %>% filter(condition == "acp", status == "complete")
+acp_change_rate <- mean(acp_data$position_changed, na.rm = TRUE)
+
+baseline_data <- participants %>% filter(condition == "simple_passive", status == "complete")
+baseline_change_rate <- mean(baseline_data$position_changed, na.rm = TRUE)
+
+cat("### Summary Statistics\n\n")
+cat(paste0("- **Total Participants:** ", total_complete, " completed the experiment\n"))
+cat(paste0("- **Overall Change Rate:** ", round(overall_change_rate * 100, 1), "% changed their position\n"))
+cat(paste0("- **ACP Change Rate:** ", round(acp_change_rate * 100, 1), "%\n"))
+cat(paste0("- **Baseline (Simple Passive):** ", round(baseline_change_rate * 100, 1), "%\n\n"))
+
+if (acp_change_rate > baseline_change_rate) {
+  diff <- acp_change_rate - baseline_change_rate
+  cat(paste0("### Main Finding\n\n"))
+  cat(paste0("**ACP condition shows ", round(diff * 100, 1), " percentage points higher change rate**\n"))
+  cat("than baseline passive exposure.\n")
+} else {
+  cat("### Main Finding\n\n")
+  cat("No clear difference between ACP and baseline conditions observed.\n")
+}
+```
+
+---
+
+<div class="centered">
+**Report generated:** `r Sys.time()`
+
+**Pilot:** `r params$pilot_id`
+</div>

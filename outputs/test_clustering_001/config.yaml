@@ -1,0 +1,30 @@
+api_sleep_seconds: 1
+arguments_per_option: 3
+clustering_algorithm: kmeans
+disagreement_threshold: 0.9
+embedding_model: text-embedding-3-small
+include_vote_distribution: false
+max_clarification_exchanges: 2
+max_clusters_per_option: 3
+max_socratic_exchanges: 2
+min_responses_for_threshold: 50
+model: gpt-4o-mini
+opposition_method: cluster_embedding
+participants_per_condition: 3
+pilot_id: test_clustering_001
+pilot_name: Clustering Implementation Test
+random_seed: 42
+topic:
+  description: 'Your city has $500,000 in discretionary funds to allocate.
+
+    You must choose which area should receive the funding.
+
+    '
+  options:
+  - Park improvements
+  - Senior services expansion
+  - Street safety improvements
+  - Small business grants
+  - Public library upgrades
+  - Community health clinics
+  - Affordable housing assistance

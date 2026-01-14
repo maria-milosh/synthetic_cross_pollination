@@ -1,0 +1,29 @@
+pilot_id: "test_full_002"
+pilot_name: "Full Pipeline Test"
+
+topic:
+  description: |
+    Your city has $500,000 in discretionary funds to allocate.
+    You must choose which area should receive the funding.
+  options:
+    - "Park improvements"
+    - "Youth job training programs"
+    - "Senior services expansion"
+
+# Very small sample for testing
+participants_per_condition: 30
+
+# High threshold to ensure we don't terminate early
+disagreement_threshold: 0.95
+
+max_clarification_exchanges: 4
+max_socratic_exchanges: 4
+
+opposition_method: "highest_voted"
+include_vote_distribution: true
+arguments_per_option: 2
+
+api_sleep_seconds: 1
+model: "gpt-5.2"
+
+random_seed: 123

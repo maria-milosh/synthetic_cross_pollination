@@ -1,0 +1,190 @@
+{
+  "pilot_id": "test_small_001",
+  "generated_at": "2026-01-08T00:17:44.346749Z",
+  "participants": [
+    {
+      "participant_id": "p_0001",
+      "condition": "simple_voting",
+      "base_persona": "a chess fanatic who cannot resist making a chess-related pun",
+      "demographics": {
+        "age": 32,
+        "sex": "M",
+        "education": "Bachelor's degree",
+        "income": "Middle income",
+        "location_type": "urban",
+        "political_leaning": "moderate"
+      },
+      "enriched_persona": "Ethan, a 32-year-old urbanite with a bachelor's degree, is the kind of guy who can\u2019t resist a good chess match\u2014or a sharp-tongued pun about it. As a middle-income professional living in the bustling heart of the city, Ethan effortlessly blends his love for strategy games with his day-to-day routine, often quipping about \u201cpawn-dering life choices\" or urging friends to make \"rook-solid decisions.\" His moderate political views often play out in casual debates, where he's known to \"checkmate\" arguments with a balanced approach, always ready to point out how opposing sides could learn a thing or two from each other, just like pieces on a board.",
+      "initial_choice": "Youth job training programs",
+      "initial_explanation": "Investing in youth job training programs creates long-term benefits, equipping the next generation with skills essential for both their futures and the community's growth. Just like in chess, building a strong foundation early can lead to strategic advantages and a prosperous outcome for everyone involved.",
+      "final_choice": null,
+      "position_changed": null,
+      "clarification_transcript": null,
+      "adversarial_transcript": null,
+      "opposition_view": null,
+      "status": "complete",
+      "error_message": null
+    },
+    {
+      "participant_id": "p_0002",
+      "condition": "simple_voting",
+      "base_persona": "a high school classmate who shared a close friendship with Max Simpson during our schooling years",
+      "demographics": {
+        "age": 34,
+        "sex": "F",
+        "education": "Bachelor's degree",
+        "income": "Middle income",
+        "location_type": "suburban",
+        "political_leaning": "moderate"
+      },
+      "enriched_persona": "Samantha Harris, now 34, lives in a comfortable suburban neighborhood where she balances her middle-income job as a project manager with the joys and challenges of modern adulthood. Having grown up in the same neighborhood as and shared a close friendship with Max Simpson during their high school years, she holds cherished memories of their countless adventures and late-night study sessions. A moderate in her political views, Samantha is known for her pragmatic approach to life's hurdles and her knack for finding common ground, a trait that has served her well both in her personal and professional life. Her bachelor's degree gave her the tools to pursue a reliable career, yet she remains deeply connected to her roots, often reminiscing about those formative years with her friend Max.",
+      "initial_choice": "Youth job training programs",
+      "initial_explanation": "Investing in youth job training programs provides vital skills and opportunities for young adults, helping them secure stable futures. It ensures the community's long-term economic health, benefits our youth's career prospects, and offers a positive impact similar to when my schooling helped shape my own career path.",
+      "final_choice": null,
+      "position_changed": null,
+      "clarification_transcript": null,
+      "adversarial_transcript": null,
+      "opposition_view": null,
+      "status": "complete",
+      "error_message": null
+    },
+    {
+      "participant_id": "p_0003",
+      "condition": "simple_passive",
+      "base_persona": "A teacher specializing in children's literature and creative writing",
+      "demographics": {
+        "age": 36,
+        "sex": "F",
+        "education": "Master's degree",
+        "income": "Middle income",
+        "location_type": "suburban",
+        "political_leaning": "liberal"
+      },
+      "enriched_persona": "Sophia Harrison, a spirited 36-year-old educator with a Master's degree, thrives in her role as a children's literature and creative writing teacher in a vibrant suburban community. With a solid middle-income lifestyle, Sophia passionately fosters creativity and imagination among her students, incorporating diverse narratives and inclusive storylines that mirror her liberal values. Her classroom is a haven for young authors and readers, where she encourages them to explore and express their voices freely in a nurturing environment she lovingly cultivates.",
+      "initial_choice": "Youth job training programs",
+      "initial_explanation": "Investing in youth job training programs aligns with my commitment to empowering young individuals and fostering their future success. Providing them with skills and opportunities not only enhances their career prospects but also contributes to the overall vitality and inclusivity of the community.",
+      "final_choice": null,
+      "position_changed": null,
+      "clarification_transcript": null,
+      "adversarial_transcript": null,
+      "opposition_view": null,
+      "status": "complete",
+      "error_message": null
+    },
+    {
+      "participant_id": "p_0004",
+      "condition": "simple_passive",
+      "base_persona": "A renowned author and activist, translating theoretical concepts into practical strategies for social change",
+      "demographics": {
+        "age": 48,
+        "sex": "F",
+        "education": "Doctorate",
+        "income": "High income",
+        "location_type": "urban",
+        "political_leaning": "liberal"
+      },
+      "enriched_persona": "At 48, Dr. Sofia Ramirez is a renowned author and activist who resides in a bustling urban center, where her liberal ideals flourish amidst a mosaic of diverse cultures and ideas. With a doctorate underpinning her intellectual prowess, Sofia is celebrated for her ability to translate complex theoretical concepts into actionable strategies for social change, influencing both grassroots movements and high-level policy discussions. Her high income allows her to fund various initiatives and support emerging voices in the activism community, making her a formidable yet approachable force for progressive transformation.",
+      "initial_choice": "Youth job training programs",
+      "initial_explanation": "Investing in youth job training programs is essential for creating equitable opportunities and empowering the next generation. Providing young people with skills and pathways to employment not only fosters economic independence but also enables them to become active contributors to their communities, promoting sustained social change.",
+      "final_choice": null,
+      "position_changed": null,
+      "clarification_transcript": null,
+      "adversarial_transcript": null,
+      "opposition_view": null,
+      "status": "complete",
+      "error_message": null
+    },
+    {
+      "participant_id": "p_0005",
+      "condition": "clarified_passive",
+      "base_persona": "A sports journalist who covers all the latest news and updates about the Kromer team",
+      "demographics": {
+        "age": 32,
+        "sex": "M",
+        "education": "Bachelor's degree",
+        "income": "Upper-middle income",
+        "location_type": "urban",
+        "political_leaning": "moderate"
+      },
+      "enriched_persona": "At 32, James Hartford thrives in the bustling urban landscape as a seasoned sports journalist passionately chronicling the dynamic world of the Kromer team. With a sharp eye for detail honed by his bachelor's degree in journalism, James navigates the ebbs and flows of sports news, delivering insightful commentary that resonates with a broad audience. His upper-middle income affords him a comfortable lifestyle, while his moderate political views lend a balanced perspective to his reporting, making him a respected voice among his peers and readers alike.",
+      "initial_choice": "Youth job training programs",
+      "initial_explanation": "Investing in youth job training programs can have a long-lasting positive impact on the community by equipping young people with the skills needed to succeed in a rapidly changing job market. This not only benefits the individuals involved but also strengthens the local economy and ensures a skilled workforce for the future. As a journalist, I've seen numerous success stories where such programs have transformed lives and provided hope for brighter futures.",
+      "final_choice": null,
+      "position_changed": null,
+      "clarification_transcript": null,
+      "adversarial_transcript": null,
+      "opposition_view": null,
+      "status": "complete",
+      "error_message": null
+    },
+    {
+      "participant_id": "p_0006",
+      "condition": "clarified_passive",
+      "base_persona": "A local artist hosting free workshops on creating homemade decorations",
+      "demographics": {
+        "age": 34,
+        "sex": "F",
+        "education": "Bachelor's degree",
+        "income": "Lower-middle income",
+        "location_type": "urban",
+        "political_leaning": "liberal"
+      },
+      "enriched_persona": "Amelia is a 34-year-old vibrant artist living in the heart of an urban landscape, where her bohemian spirit and a bachelor's degree in fine arts drive her passion for making art accessible to all. With a liberal mindset, she believes in the power of community and inclusivity, channeling her creative energy into hosting free workshops that teach locals how to craft homemade decorations. Despite her lower-middle income, Amelia finds joy in sharing her skills, fostering a sense of connection, and inspiring others to see beauty in everyday materials, all while creating a warm, supportive environment where creativity knows no boundaries.",
+      "initial_choice": "Youth job training programs",
+      "initial_explanation": "Investing in youth job training programs aligns with my belief in empowering individuals through skill development and creativity. This funding can provide young people with the tools they need to thrive in their careers, fostering a stronger community and promoting inclusivity in the workforce.",
+      "final_choice": null,
+      "position_changed": null,
+      "clarification_transcript": null,
+      "adversarial_transcript": null,
+      "opposition_view": null,
+      "status": "complete",
+      "error_message": null
+    },
+    {
+      "participant_id": "p_0007",
+      "condition": "acp",
+      "base_persona": "I am a mycologist with a keen interest in historical descriptions of fungal species.",
+      "demographics": {
+        "age": 42,
+        "sex": "F",
+        "education": "Doctorate",
+        "income": "Upper-middle income",
+        "location_type": "urban",
+        "political_leaning": "liberal"
+      },
+      "enriched_persona": "At 42, Dr. Lila Richardson is a respected mycologist residing in the vibrant urban hub of Seattle, where the cutting-edge intersections of science and culture fuel her passion. With a doctorate in mycology, she delves deep into historical texts to unearth bygone descriptions of fungal species, bridging the past with the present through her research. A liberal thinker with an upper-middle-income lifestyle, Lila frequently contributes to conferences and publications, advocating for environmental conservation and the wonders of fungi in modern ecosystems.",
+      "initial_choice": "Park improvements",
+      "initial_explanation": "Improving parks can enhance urban ecosystems, encouraging biodiversity and providing educational opportunities about nature, including fungi. Such initiatives foster a healthier environment, benefiting all age groups and reflecting my passion for conservation and ecological awareness.",
+      "final_choice": null,
+      "position_changed": null,
+      "clarification_transcript": null,
+      "adversarial_transcript": null,
+      "opposition_view": null,
+      "status": "complete",
+      "error_message": null
+    },
+    {
+      "participant_id": "p_0008",
+      "condition": "acp",
+      "base_persona": "A tourism operator providing immersive experiences that inspire the content writer's stories",
+      "demographics": {
+        "age": 34,
+        "sex": "M",
+        "education": "Bachelor's degree",
+        "income": "Upper-middle income",
+        "location_type": "urban",
+        "political_leaning": "moderate"
+      },
+      "enriched_persona": "Ethan Maxwell, a 34-year-old tourism operator, thrives in the vibrant urban landscape, skillfully weaving captivating experiences that ignite the imaginations of content writers. With a bachelor's degree and an upper-middle income level, he leverages his diverse insights to craft immersive adventures that blend cultural depth and modern comforts. Moderately political, Ethan's nuanced perspectives shape his innovative itineraries, ensuring they resonate deeply with a broad audience, all while fostering creative storytelling through unforgettable journeys.",
+      "initial_choice": "Youth job training programs",
+      "initial_explanation": "Investing in youth job training programs creates opportunities for young people to develop skills crucial for the workforce, driving economic growth and innovation within the city. By equipping the younger generation with essential tools for success, we ensure a more vibrant community that can thrive in a competitive global market, ultimately enhancing the cultural and economic fabric of urban life.",
+      "final_choice": null,
+      "position_changed": null,
+      "clarification_transcript": null,
+      "adversarial_transcript": null,
+      "opposition_view": null,
+      "status": "complete",
+      "error_message": null
+    }
+  ]
+}

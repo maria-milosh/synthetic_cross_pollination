@@ -1,0 +1,52 @@
+pilot_id: "pilot_001"
+pilot_name: "Participatory Budgeting Test"
+
+# Topic Definition
+topic:
+  description: |
+    Your city has $500,000 in discretionary funds to allocate.
+    You must choose which area should receive the funding.
+  options:
+    - "Park improvements"
+    - "Senior services expansion"
+    - "Street safety improvements"
+    - "Small business grants"
+    - "Public library upgrades"
+    - "Community health clinics"
+    - "Affordable housing assistance"
+
+# Sample Size
+participants_per_condition: 300
+
+# Disagreement Threshold
+disagreement_threshold: 0.9  # Terminate if any option gets >= this proportion
+min_responses_for_threshold: 50  # Minimum responses before checking threshold
+
+# Stopping Conditions
+max_clarification_exchanges: 5
+max_socratic_exchanges: 5
+
+# Opposition Selection
+opposition_method: "cluster_embedding"  # Options: "embedding", "llm_judge", "predefined", "highest_voted", "cluster_embedding"
+# If using predefined, specify mapping:
+# opposition_mapping:
+#   "Park improvements": "Street safety improvements"
+#   ...
+
+# Clustering Configuration (for Phase 4 Summaries)
+clustering_algorithm: "kmeans"  # Options: "kmeans", "agglomerative"
+max_clusters_per_option: 6      # Maximum clusters per voting option
+
+# Embedding Configuration
+embedding_model: "text-embedding-3-small"  # OpenAI embedding model
+
+# Cross-Pollination Display (deprecated options kept for backwards compatibility)
+include_vote_distribution: false  # Whether to show vote counts in summary
+arguments_per_option: 3           # Number of strongest arguments to show per option
+
+# API Settings
+api_sleep_seconds: 3  # Delay between API calls
+model: "gpt-4o"
+
+# Random Seed (optional, for reproducibility of persona sampling)
+# random_seed: 42

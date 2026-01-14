@@ -1,0 +1,52 @@
+{
+  "pilot_id": "test_full_002",
+  "terminated_early": true,
+  "termination_reason": "Option 'Youth job training programs' exceeded 95% threshold",
+  "total_participants": 120,
+  "by_condition": {
+    "simple_voting": {
+      "total": 30,
+      "completed": 30,
+      "failed": 0,
+      "initial_vote_distribution": {
+        "Youth job training programs": 30
+      },
+      "position_changed": null,
+      "final_vote_distribution": null
+    },
+    "simple_passive": {
+      "total": 30,
+      "completed": 30,
+      "failed": 0,
+      "initial_vote_distribution": {
+        "Youth job training programs": 30
+      },
+      "final_vote_distribution": {},
+      "position_changed": 0,
+      "position_changed_rate": 0.0
+    },
+    "clarified_passive": {
+      "total": 30,
+      "completed": 30,
+      "failed": 0,
+      "initial_vote_distribution": {
+        "Youth job training programs": 29,
+        "Park improvements": 1
+      },
+      "final_vote_distribution": {},
+      "position_changed": 0,
+      "position_changed_rate": 0.0
+    },
+    "acp": {
+      "total": 30,
+      "completed": 30,
+      "failed": 0,
+      "initial_vote_distribution": {
+        "Youth job training programs": 30
+      },
+      "final_vote_distribution": {},
+      "position_changed": 0,
+      "position_changed_rate": 0.0
+    }
+  }
+}

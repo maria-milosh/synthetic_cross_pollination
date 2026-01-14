@@ -1,0 +1,69 @@
+{
+  "pilot_id": "test_clustering_001",
+  "terminated_early": false,
+  "termination_reason": null,
+  "total_participants": 12,
+  "by_condition": {
+    "simple_voting": {
+      "total": 3,
+      "completed": 3,
+      "failed": 0,
+      "initial_vote_distribution": {
+        "Small business grants": 1,
+        "Park improvements": 1,
+        "Public library upgrades": 1
+      },
+      "position_changed": null,
+      "final_vote_distribution": null
+    },
+    "simple_passive": {
+      "total": 3,
+      "completed": 3,
+      "failed": 0,
+      "initial_vote_distribution": {
+        "Community health clinics": 1,
+        "Small business grants": 1,
+        "Affordable housing assistance": 1
+      },
+      "final_vote_distribution": {
+        "Community health clinics": 1,
+        "Small business grants": 1,
+        "Affordable housing assistance": 1
+      },
+      "position_changed": 0,
+      "position_changed_rate": 0.0
+    },
+    "clarified_passive": {
+      "total": 3,
+      "completed": 3,
+      "failed": 0,
+      "initial_vote_distribution": {
+        "Community health clinics": 2,
+        "Street safety improvements": 1
+      },
+      "final_vote_distribution": {
+        "Community health clinics": 2,
+        "Street safety improvements": 1
+      },
+      "position_changed": 0,
+      "position_changed_rate": 0.0
+    },
+    "acp": {
+      "total": 3,
+      "completed": 3,
+      "failed": 0,
+      "initial_vote_distribution": {
+        "Street safety improvements": 1,
+        "Public library upgrades": 1,
+        "Small business grants": 1
+      },
+      "final_vote_distribution": {
+        "Street safety improvements": 1,
+        "Public library upgrades": 1,
+        "Small business grants": 1
+      },
+      "position_changed": 0,
+      "position_changed_rate": 0.0
+    }
+  }
+}

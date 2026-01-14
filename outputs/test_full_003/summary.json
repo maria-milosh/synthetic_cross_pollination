@@ -1,0 +1,76 @@
+{
+  "pilot_id": "test_full_003",
+  "terminated_early": false,
+  "termination_reason": null,
+  "total_participants": 120,
+  "by_condition": {
+    "simple_voting": {
+      "total": 30,
+      "completed": 30,
+      "failed": 0,
+      "initial_vote_distribution": {
+        "Street Maintenance and Pothole Repair": 4,
+        "Expanded Mental Health Services": 9,
+        "Affordable Housing Preservation Fund": 16,
+        "Public Spaces and Parks Improvement": 1
+      },
+      "position_changed": null,
+      "final_vote_distribution": null
+    },
+    "simple_passive": {
+      "total": 30,
+      "completed": 30,
+      "failed": 0,
+      "initial_vote_distribution": {
+        "Expanded Mental Health Services": 15,
+        "Public Safety and Violence Prevention Programs": 3,
+        "Affordable Housing Preservation Fund": 9,
+        "Street Maintenance and Pothole Repair": 2,
+        "Public Spaces and Parks Improvement": 1
+      },
+      "final_vote_distribution": {
+        "Expanded Mental Health Services": 23,
+        "Affordable Housing Preservation Fund": 6,
+        "Street Maintenance and Pothole Repair": 1
+      },
+      "position_changed": 8,
+      "position_changed_rate": 0.26666666666666666
+    },
+    "clarified_passive": {
+      "total": 30,
+      "completed": 30,
+      "failed": 0,
+      "initial_vote_distribution": {
+        "Affordable Housing Preservation Fund": 12,
+        "Expanded Mental Health Services": 11,
+        "Street Maintenance and Pothole Repair": 4,
+        "Public Spaces and Parks Improvement": 3
+      },
+      "final_vote_distribution": {
+        "Affordable Housing Preservation Fund": 9,
+        "Expanded Mental Health Services": 19,
+        "Street Maintenance and Pothole Repair": 2
+      },
+      "position_changed": 8,
+      "position_changed_rate": 0.26666666666666666
+    },
+    "acp": {
+      "total": 30,
+      "completed": 30,
+      "failed": 0,
+      "initial_vote_distribution": {
+        "Affordable Housing Preservation Fund": 11,
+        "Expanded Mental Health Services": 15,
+        "Public Safety and Violence Prevention Programs": 1,
+        "Street Maintenance and Pothole Repair": 2,
+        "Public Spaces and Parks Improvement": 1
+      },
+      "final_vote_distribution": {
+        "Expanded Mental Health Services": 16,
+        "Affordable Housing Preservation Fund": 14
+      },
+      "position_changed": 29,
+      "position_changed_rate": 0.9666666666666667
+    }
+  }
+}

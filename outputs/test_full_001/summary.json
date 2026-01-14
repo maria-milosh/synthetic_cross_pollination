@@ -1,0 +1,59 @@
+{
+  "pilot_id": "test_full_001",
+  "terminated_early": false,
+  "termination_reason": null,
+  "total_participants": 8,
+  "by_condition": {
+    "simple_voting": {
+      "total": 2,
+      "completed": 2,
+      "failed": 0,
+      "initial_vote_distribution": {
+        "Youth job training programs": 2
+      },
+      "position_changed": null,
+      "final_vote_distribution": null
+    },
+    "simple_passive": {
+      "total": 2,
+      "completed": 2,
+      "failed": 0,
+      "initial_vote_distribution": {
+        "Youth job training programs": 2
+      },
+      "final_vote_distribution": {
+        "Youth job training programs": 2
+      },
+      "position_changed": 0,
+      "position_changed_rate": 0.0
+    },
+    "clarified_passive": {
+      "total": 2,
+      "completed": 2,
+      "failed": 0,
+      "initial_vote_distribution": {
+        "Youth job training programs": 2
+      },
+      "final_vote_distribution": {
+        "Youth job training programs": 2
+      },
+      "position_changed": 0,
+      "position_changed_rate": 0.0
+    },
+    "acp": {
+      "total": 2,
+      "completed": 2,
+      "failed": 0,
+      "initial_vote_distribution": {
+        "Senior services expansion": 1,
+        "Youth job training programs": 1
+      },
+      "final_vote_distribution": {
+        "Senior services expansion": 1,
+        "Youth job training programs": 1
+      },
+      "position_changed": 0,
+      "position_changed_rate": 0.0
+    }
+  }
+}

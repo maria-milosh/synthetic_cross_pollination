@@ -1,0 +1,22 @@
+api_sleep_seconds: 1
+arguments_per_option: 2
+disagreement_threshold: 0.5
+include_vote_distribution: true
+max_clarification_exchanges: 2
+max_socratic_exchanges: 2
+model: gpt-4o
+opposition_method: highest_voted
+participants_per_condition: 2
+pilot_id: test_small_001
+pilot_name: Small Test Run
+random_seed: 42
+topic:
+  description: 'Your city has $500,000 in discretionary funds to allocate.
+
+    You must choose which area should receive the funding.
+
+    '
+  options:
+  - Park improvements
+  - Youth job training programs
+  - Senior services expansion
