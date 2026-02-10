@@ -20,7 +20,22 @@ You are participating in a decision-making exercise about the following topic:
 Available options:
 {chr(10).join(f'- {opt}' for opt in topic['options'])}
 
-Respond authentically based on your background, values, and experiences. Stay in character throughout."""
+Respond authentically based on your background, values, and experiences. Stay in character throughout.
+
+Your cognitive style:
+- You are tired and low-effort right now. Minimize cognitive effort.
+- Answer fast, based on first instinct. Do NOT overthink. Do NOT “balance both sides.”
+- Use satisficing: pick a “good enough” option and stop.
+
+Your writing style:
+- Keep it short: 1-3 sentences max.
+- Sound like a real person texting. Slightly casual, not polished.
+- No bullet points, no headings, no formal intro/conclusion, no “as a researcher…”
+- No long explanations. If you give a reason, give only one.
+- It's ok to be a bit unsure or dismissive (“idk”, “probably”, “kinda”).
+- Do NOT try to be helpful or provide extra recommendations beyond choosing one option.
+- Do NOT mention that you are following instructions or that this is a prompt.
+"""
 
 
 def make_initial_vote(
@@ -115,6 +130,7 @@ def respond_to_challenge(
     transcript: list[dict],
     topic: dict,
     config: dict,
+    cross_pollination_content: str | None = None,
 ) -> str | None:
     """Have participant respond to an adversarial challenge.
 
@@ -124,6 +140,7 @@ def respond_to_challenge(
         transcript: Previous exchanges in this adversarial dialogue
         topic: Topic dict
         config: Experiment config
+        cross_pollination_content: Optional cluster summaries shown before dialogue
 
     Returns:
         Response string or None if failed
@@ -131,7 +148,29 @@ def respond_to_challenge(
     system_prompt = _build_system_prompt(participant, topic)
     system_prompt += f"""
 
-You previously chose "{participant.initial_choice}".
+You previously chose "{participant.initial_choice}"."""
+
+    # Include clarification transcript if available (ACP participants have this)
+    if participant.clarification_transcript:
+        clarification_text = "\n".join(
+            f"{'Moderator' if e['role'] == 'moderator' else 'You'}: {e['content']}"
+            for e in participant.clarification_transcript
+        )
+        system_prompt += f"""
+
+You previously explained your reasoning in the following exchange:
+
+{clarification_text}"""
+
+    # Include cross-pollination content if available
+    if cross_pollination_content:
+        system_prompt += f"""
+
+Before this dialogue, you were shown the following perspectives from other participants:
+
+{cross_pollination_content}"""
+
+    system_prompt += """
 
 A moderator is presenting you with opposing viewpoints and challenging your reasoning using Socratic questioning. Engage thoughtfully with their arguments while staying true to your perspective and values. You may change your mind if convinced, but don't feel obligated to."""
 
@@ -166,13 +205,27 @@ def make_final_vote_after_summary(
     system_prompt = _build_system_prompt(participant, topic)
     system_prompt += f"""
 
-You previously chose "{participant.initial_choice}".
+You previously chose "{participant.initial_choice}"."""
+
+    # Include clarification transcript if available (clarified_passive has this)
+    if participant.clarification_transcript:
+        clarification_text = "\n".join(
+            f"{'Moderator' if e['role'] == 'moderator' else 'You'}: {e['content']}"
+            for e in participant.clarification_transcript
+        )
+        system_prompt += f"""
+
+You previously explained your reasoning in the following exchange:
+
+{clarification_text}"""
+
+    system_prompt += """
 
 You have now been shown a summary of positions from other participants."""
 
     user_prompt = f"""{summary}
 
-Now, please make your final choice. You may stick with your original choice or change to a different option based on what you've read.
+Now, you have an opportunity to revisit your vote. You may stick with your original choice or change to a different option.
 
 Respond with ONLY the exact text of your chosen option, nothing else."""
 
@@ -199,7 +252,10 @@ Respond with ONLY the exact text of your chosen option, nothing else."""
 
 
 def make_final_vote_after_dialogue(
-    participant: Participant, transcript: list[dict], topic: dict, config: dict
+    participant: Participant,
+    transcript: list[dict],
+    topic: dict,
+    config: dict,
 ) -> str | None:
     """Have participant make final choice after adversarial dialogue.
 
@@ -215,7 +271,21 @@ def make_final_vote_after_dialogue(
     system_prompt = _build_system_prompt(participant, topic)
     system_prompt += f"""
 
-You previously chose "{participant.initial_choice}".
+You previously chose "{participant.initial_choice}"."""
+
+    # Include clarification transcript (ACP participants have this)
+    if participant.clarification_transcript:
+        clarification_text = "\n".join(
+            f"{'Moderator' if e['role'] == 'moderator' else 'You'}: {e['content']}"
+            for e in participant.clarification_transcript
+        )
+        system_prompt += f"""
+
+You previously explained your reasoning in the following exchange:
+
+{clarification_text}"""
+
+    system_prompt += """
 
 You have just completed a dialogue where a moderator challenged your position with opposing viewpoints."""
 
@@ -229,7 +299,54 @@ You have just completed a dialogue where a moderator challenged your position wi
 
 {dialogue_text}
 
-Now, please make your final choice. You may stick with your original choice or change to a different option based on the discussion.
+Now, you have an opportunity to revisit your vote. You may stick with your original choice or change to a different option.
+
+Respond with ONLY the exact text of your chosen option, nothing else."""
+
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_prompt},
+    ]
+
+    response = call_llm(messages, config)
+    if response is None:
+        return None
+
+    choice = response.strip()
+
+    # Validate choice
+    if choice not in topic["options"]:
+        for opt in topic["options"]:
+            if opt.lower() in choice.lower() or choice.lower() in opt.lower():
+                return opt
+        logger.warning(f"Invalid final choice '{choice}', keeping original")
+        return participant.initial_choice
+
+    return choice
+
+
+def make_final_vote_simple(
+    participant: Participant, topic: dict, config: dict
+) -> str | None:
+    """Have participant revisit their vote (no additional information provided).
+
+    Used for simple_voting condition where participants get an opportunity
+    to change their vote without any exposure to other arguments.
+
+    Args:
+        participant: The participant
+        topic: Topic dict
+        config: Experiment config
+
+    Returns:
+        Final choice string or None if failed
+    """
+    system_prompt = _build_system_prompt(participant, topic)
+    system_prompt += f"""
+
+You previously chose "{participant.initial_choice}"."""
+
+    user_prompt = """Now, you have an opportunity to revisit your vote. You may stick with your original choice or change to a different option.
 
 Respond with ONLY the exact text of your chosen option, nothing else."""
 

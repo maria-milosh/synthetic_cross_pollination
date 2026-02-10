@@ -3,7 +3,7 @@
 import logging
 
 from ..participants import Participant, get_by_conditions, mark_failed
-from ..simulator import make_final_vote_after_summary
+from ..simulator import make_final_vote_after_summary, make_final_vote_simple
 from ..summarizer import format_cross_pollination_content
 
 logger = logging.getLogger(__name__)
@@ -42,6 +42,9 @@ def run(
 
     logger.debug(f"Phase 6: Cross-pollination content:\n{cross_pollination_content}")
 
+    # Process simple_voting group (revisit vote with no extra info)
+    simple_result = _process_simple_voting_group(participants, config, topic)
+
     # Process passive groups (they vote after viewing)
     passive_result = _process_passive_groups(
         participants, config, topic, cross_pollination_content
@@ -52,10 +55,12 @@ def run(
         participants, config, cross_pollination_content
     )
 
-    total = passive_result["total"] + acp_result["total"]
+    total = simple_result["total"] + passive_result["total"] + acp_result["total"]
 
     logger.info(
-        f"Phase 6: Complete. Passive: {passive_result['succeeded']} voted, "
+        f"Phase 6: Complete. Simple: {simple_result['succeeded']} voted, "
+        f"{simple_result['position_changed']} changed. "
+        f"Passive: {passive_result['succeeded']} voted, "
         f"{passive_result['position_changed']} changed. "
         f"ACP: {acp_result['total']} viewed cross-pollination content."
     )
@@ -63,12 +68,65 @@ def run(
     return {
         "phase": 6,
         "total": total,
+        "simple_total": simple_result["total"],
+        "simple_succeeded": simple_result["succeeded"],
+        "simple_failed": simple_result["failed"],
+        "simple_position_changed": simple_result["position_changed"],
         "passive_total": passive_result["total"],
         "passive_succeeded": passive_result["succeeded"],
         "passive_failed": passive_result["failed"],
         "passive_position_changed": passive_result["position_changed"],
         "acp_total": acp_result["total"],
         "acp_viewed": acp_result["viewed"],
+    }
+
+
+def _process_simple_voting_group(
+    participants: list[Participant],
+    config: dict,
+    topic: dict,
+) -> dict:
+    """Process simple_voting group: revisit vote with no extra information.
+
+    Args:
+        participants: All participants
+        config: Experiment config
+        topic: Topic dict
+
+    Returns:
+        Dict with simple_voting group results
+    """
+    simple = get_by_conditions(participants, ["simple_voting"])
+    simple = [p for p in simple if p.status == "complete"]
+
+    total = len(simple)
+    succeeded = 0
+    failed = 0
+    changed = 0
+
+    logger.info(f"Phase 6: Getting final votes from {total} simple_voting participants")
+
+    for i, participant in enumerate(simple):
+        logger.info(f"Phase 6: Processing simple_voting participant {i + 1}/{total}")
+
+        final_choice = make_final_vote_simple(participant, topic, config)
+
+        if final_choice is None:
+            mark_failed(participant, "Failed to get final vote")
+            failed += 1
+            logger.warning(f"Phase 6: Failed for {participant.participant_id}")
+        else:
+            participant.final_choice = final_choice
+            participant.position_changed = final_choice != participant.initial_choice
+            if participant.position_changed:
+                changed += 1
+            succeeded += 1
+
+    return {
+        "total": total,
+        "succeeded": succeeded,
+        "failed": failed,
+        "position_changed": changed,
     }
 
 

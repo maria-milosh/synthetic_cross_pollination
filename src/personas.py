@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 PERSONA_HUB_URL = "https://raw.githubusercontent.com/tencent-ailab/persona-hub/refs/heads/main/data/persona.jsonl"
 
 EDUCATION_LEVELS = [
+    "Less than high school",
     "High school",
     "Some college",
     "Bachelor's degree",

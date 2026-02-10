@@ -148,7 +148,8 @@ When the participant has thoroughly engaged with the opposing arguments (shown g
 
         # Get participant's response
         participant_response = respond_to_challenge(
-            participant, moderator_response, transcript, topic, config
+            participant, moderator_response, transcript, topic, config,
+            cross_pollination_content=cross_pollination_content
         )
         if participant_response is None:
             logger.error(
